@@ -120,8 +120,8 @@ WindowClone.prototype = {
         this.metaWindow._delegate = this;
         this.overlay = null;
 
-        this.origX = realWindow.x;
-        this.origY = realWindow.y;
+        this.origX = 0;
+        this.origY = 0;
 
         // The MetaShapedTexture that we clone has a size that includes
         // the invisible border; this is inconvenient; rather than trying
@@ -166,7 +166,7 @@ WindowClone.prototype = {
     refreshClone: function(withTransients) {
         this.actor.destroy_all_children();
 
-        let {width, height} = this.metaWindow.get_outer_rect();
+        let {x, y, width, height} = this.metaWindow.get_outer_rect();
         let clones = WindowUtils.createWindowClone(this.metaWindow, 0, 0, withTransients);
         for (let clone of clones) {
             this.actor.add_actor(clone.actor);
@@ -174,6 +174,9 @@ WindowClone.prototype = {
             clone.actor.set_position(Math.round((width - cwidth) / 2), Math.round((height - cheight) / 2));
         }
         this.actor.set_size(width, height);
+        this.actor.set_position(x, y);
+        this.origX = x;
+        this.origY = y;
     },
 
     setStackAbove: function (actor) {
