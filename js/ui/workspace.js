@@ -168,10 +168,15 @@ WindowClone.prototype = {
 
         let {x, y, width, height} = this.metaWindow.get_outer_rect();
         let clones = WindowUtils.createWindowClone(this.metaWindow, 0, 0, withTransients);
+        let cloneX, cloneY;
         for (let clone of clones) {
+            cloneX = clone.x - x;
+            cloneY = clone.y - y;
+            if (clone !== clones[0]) {
+                clone.actor.set_clip(-cloneX, -cloneY, width, height);
+            }
+            clone.actor.set_position(cloneX, cloneY);
             this.actor.add_actor(clone.actor);
-            let [cwidth, cheight] = clone.actor.get_size();
-            clone.actor.set_position(Math.round((width - cwidth) / 2), Math.round((height - cheight) / 2));
         }
         this.actor.set_size(width, height);
         this.actor.set_position(x, y);
@@ -890,7 +895,7 @@ WorkspaceMonitor.prototype = {
      */
     _computeWindowLayout: function(metaWindow, slot) {
         let [x, y, width, height] = this._getSlotGeometry(slot);
-        let rect = metaWindow.get_input_rect();
+        let rect = metaWindow.get_outer_rect();
         let topBorder = 0, bottomBorder = 0, leftBorder = 0, rightBorder = 0;
 
         if (this._windows.length) {
