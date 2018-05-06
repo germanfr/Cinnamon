@@ -569,16 +569,8 @@ WindowOverlay.prototype = {
         let caption = this.caption;
         let button = this.closeButton;
 
-        let settings = new Gio.Settings({ schema_id: BUTTON_LAYOUT_SCHEMA });
-        let layout = settings.get_string(BUTTON_LAYOUT_KEY);
-        let rtl = St.Widget.get_default_direction() === St.TextDirection.RTL;
-
-        let split = layout.split(":");
-        let side;
-        if (split[0].indexOf("close") > -1)
-            side = rtl ? St.Side.RIGHT : St.Side.LEFT;
-        else
-            side = rtl ? St.Side.LEFT : St.Side.RIGHT;
+        let layout = Meta.prefs_get_button_layout();
+        let side = layout.left_buttons.indexOf(Meta.ButtonFunction.CLOSE) > -1 ? St.Side.LEFT : St.Side.RIGHT;
 
         let buttonX;
         let buttonY = cloneY - (button.height - button._overlap);
